@@ -1,2 +1,4 @@
 # DMSD
-Descriptive Modelling of System Dynamics
+Project Description
+Project name: Descriptive Modelling of System Dynamics
+
