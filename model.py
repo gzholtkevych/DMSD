@@ -1,6 +1,11 @@
 from utils import inc, dec
 
 
+# model parameters
+__number_of_values = None   # this parameter sets the range for values
+__current_config   = None   # this parameter refers to the current system config
+__next             = None   # this parameter refers to the operator determined dynamics
+
 class Model:
     """The class represents a descriptive model
 
