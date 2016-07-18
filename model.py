@@ -1,61 +1,49 @@
-from utils import inc, dec
+from utils import inc, dec, config2str
 
 
-# model parameters
-__number_of_values = None   # this parameter sets the range for values
-__current_config   = None   # this parameter refers to the current system config
-__next             = None   # this parameter refers to the operator determined dynamics
+# ----------------------------------------------------------------------
+# Model parameters -----------------------------------------------------
+# ----------------------------------------------------------------------
+__ubrv = None  # : this parameter sets the upper bound of a range values
+#
+__impact = lambda cfg: 0  # : this parameter refers to the function that
+# determines dict of impact values {-1, 0, 1} for each configuration
+# ----------------------------------------------------------------------
 
-class Model:
-    """The class represents a descriptive model
 
+def __next(config):
+    global __impact
+    impacts = __impact(config)
+    for key in config:
+        if impacts[key] < 0:
+            config[key] = dec(config[key], __ubrv)
+        elif impacts[key] > 0:
+            config[key] = inc(config[key], __ubrv)
+        elif impacts[key] == 0:
+            pass
+        else: raise ValueError("incorrect impact value")
+    return config
+
+
+def run(report, init_config, nsteps=100):
+    """The function simulates system behaviour
+
+    Arguments:
+    ----------
+        report  str : the file name for report saving
+        init_config  dict : the initial model configuration
+        nsteps  int  {nsteps > 0} : the length of the simulation history
+
+    Return:
+    -------
+        return_code  int  {return <= 0} : 0 in the case of the
+            successful termination and in other cases negative integer
+            corresponding to kind of the detected problem
     """
-    def __init__(self, nvals, params, dynamics):
-        """Construct of the model
-
-        Arguments:
-        ----------
-            # the number of the observed values
-            nvals:     int           {nvals >= 2}
-            # the dictionary of parameters with their initial values
-            params:    dict          {len(params) >= 2}
-            # the dynamic operator on parameter space
-            dynamics:  dict -> dict
-        """
-        self.__nvs = nvals
-        self.__cfg = params
-        self.__dyn = dynamics
-        pass
-
-    def get_cfg(self):
-        """Method is devoted to inspect the current model configuration
-
-        Arguments are absent
-        --------------------
-        Return
-        ------
-            dict()
-        """
-        pass
-
-    def __next__(self):
-        impacts = self.__dyn(self.get_cfg())
-        res = {}
-        for param in self.__cfg:
-            if impacts[param] < 0:
-                res[param] = dec(self.__cfg[param], self.__nvs)
-            elif impacts[param] > 0:
-                res[param] = inc(self.__cfg[param], self.__nvs)
-            else:
-                res[param] = self.__cfg[param]
-        return res
-
-    def run(self, life_length, report):
-        file = open(report, mode='w')
-        counter = 0
-        while counter < life_length:
-            file.write(counter, self.get_cfg())
-            self.__cfg = self.__next()
-            counter += 1
-        file.write(counter, self.get_cfg())
-        file.close()
+    report_file = open(report, mode='w')
+    config = init_config
+    for step in range(nsteps):
+        report_string = "{0}: {1}".format(step, config2str(config))
+        report_file.write(report_string)
+        config = __next(config)
+    report_file.close()

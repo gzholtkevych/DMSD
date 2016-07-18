@@ -1,56 +1,59 @@
 
 
-def is_correct(cval, nvals):
-    """The function checks whether 'cval' belongs to range(nvals)
+def is_correct(val, nov):
+    """The function checks whether 'val' belongs to range(nov)
 
     Arguments:
-    ----------
-        cval:    int                checked value
-        nvals:   int  {nvals >= 2}  upper bound of the range
+        val  int :  the checked value
+        nov  int  {nov > 1}:  the number of observed values
 
-        return:  bool | TypeError | ValueError
+    Returns:
+        bool | TypeError | ValueError
     """
-    if not isinstance(cval, int):
-        return TypeError("type of 'cval' is invalid")
-    if not isinstance(nvals, int):
-        return TypeError("type of 'nvals' is invalid")
-    if nvals < 2:
-        return ValueError("value of 'nvals' is invalid")
-    if cval < 0 or cval >= nvals:
-        return ValueError("value of 'cval' is invalid")
+    if not isinstance(val, int):
+        return TypeError("type of 'val' is invalid")
+    if not isinstance(nov, int):
+        return TypeError("type of 'nov' is invalid")
+    if nov < 2:
+        return ValueError("value of 'nov' is invalid")
+    if val < 0 or val >= nov:
+        return ValueError("value of 'val' is invalid")
     return True
 
 
-def inc(cval, nvals):
-    """The function increments value of 'cval' keeping the condition
-        cval < nvals
+def inc(val, nov):
+    """The function increments value of 'val' keeping the condition
+        val < nov
 
     Arguments:
-    ----------
-        cval:   int   {0 <= cval < nvals}  increased value
-        nvals:  int   {nvals >= 2}         upper bound of the range
+        val  int  {0 <= cval < nov}:  the value being increased
+        nov  int  {nov > 1}:  the number of observed values
 
-        return:  int  increased value
+    Returns:
+        int:  the increased value
     """
-    result = is_correct(cval, nvals)
+    result = is_correct(val, nov)
     if isinstance(result, Exception):  # checking is not successful
         raise result
-    cval += 1
-    return min(cval, nvals - 1)
+    val += 1
+    return min(val, nov - 1)
 
 
-def dec(cval, nvals):
+def dec(val, nov):
     """The function decrements value of 'cval' keeping the condition
-        cval >= 0
+        val >= 0
 
     Arguments:
-    ----------
-        cval:   int   {0 <= cval < nvals}  decreased value
-        nvals:  int   {nvals >= 2}         upper bound of the range
+        val  int  {0 <= val < nov}:  the value being decreased
+        nov  int  {nov > 1}:  the number of observed values
 
-        return:  int  decreased value
+    Returns:
+        int:  the decreased value
     """
-    result = is_correct(cval, nvals)
+    result = is_correct(val, nov)
     if isinstance(result, Exception): raise result
-    cval -= 1
-    return max(0, cval)
+    val -= 1
+    return max(0, val)
+
+
+def config2str(config): pass
