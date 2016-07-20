@@ -1,59 +1,49 @@
+import matplotlib.pyplot as plt
 
 
-def is_correct(val, nov):
-    """The function checks whether 'val' belongs to range(nov)
+def plot_history(report):
+    """The function visualizes behaviour of system variables
 
-    Arguments:
-        val  int :  the checked value
-        nov  int  {nov > 1}:  the number of observed values
-
+    Args:
+        report  str:
+            this string contains the specification of the report file
+            being visualized
     Returns:
-        bool | TypeError | ValueError
+        diagnostic_message  str:
+            this message describes problem of visualization process;
+            the normal termination is described by the message
+            "Visualization has successfully completed"
     """
-    if not isinstance(val, int):
-        return TypeError("type of 'val' is invalid")
-    if not isinstance(nov, int):
-        return TypeError("type of 'nov' is invalid")
-    if nov < 2:
-        return ValueError("value of 'nov' is invalid")
-    if val < 0 or val >= nov:
-        return ValueError("value of 'val' is invalid")
-    return True
-
-
-def inc(val, nov):
-    """The function increments value of 'val' keeping the condition
-        val < nov
-
-    Arguments:
-        val  int  {0 <= cval < nov}:  the value being increased
-        nov  int  {nov > 1}:  the number of observed values
-
-    Returns:
-        int:  the increased value
-    """
-    result = is_correct(val, nov)
-    if isinstance(result, Exception):  # checking is not successful
-        raise result
-    val += 1
-    return min(val, nov - 1)
-
-
-def dec(val, nov):
-    """The function decrements value of 'cval' keeping the condition
-        val >= 0
-
-    Arguments:
-        val  int  {0 <= val < nov}:  the value being decreased
-        nov  int  {nov > 1}:  the number of observed values
-
-    Returns:
-        int:  the decreased value
-    """
-    result = is_correct(val, nov)
-    if isinstance(result, Exception): raise result
-    val -= 1
-    return max(0, val)
-
-
-def config2str(config): pass
+    try:  # opening the file contained simulation report
+        report_file = open(report, 'rt')
+    except FileNotFoundError:
+        return "Report file not found"
+    # restoring the system variables
+    vars = report_file.readline()[:-1].split(' ')
+    nvars = len(vars)
+    # preparing data arrays
+    data = dict([(var, []) for var in vars])
+    for line in report_file:
+        vals = line[:-1].split(' ')
+        for var_id in range(nvars):
+            data[vars[var_id]].append(int(vals[var_id]))
+    # determining plotting boundaries
+    xmax, ymax = 0, 0
+    for var in vars:
+        xmax = max(xmax, len(data[var]) - 1)
+        ymax = max(ymax, max(data[var]))
+    # pyplot commands
+    fig = plt.figure()
+    plt.title("History of the system behaviour")
+    plt.xlabel("Time tiсks")
+    plt.ylabel("Values of the system variables")
+    plt.xlim((0, xmax + 1))
+    plt.ylim((-0.25, ymax + 0.5))
+    plt.yticks(range(ymax + 1))
+    ax = fig.add_axes()
+    plt.grid()
+    for var in vars:
+        plt.plot(data[var])
+    plt.legend(vars)
+    plt.show()
+    return "Visualization has successfully completed"
