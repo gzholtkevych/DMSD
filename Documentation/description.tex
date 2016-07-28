@@ -1,0 +1,53 @@
+\documentclass[11pt,reqno]{amsart}
+%
+\usepackage{lipsum}
+%
+\newtheorem{problem}{Problem}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\V}[1]{\mathcal{V}_{#1}}
+\newcommand{\C}[1]{\mathcal{V}_{#1}^{\A}}
+\newcommand{\imp}{\mathop{imp}}
+\newcommand{\D}{\mathcal{D}}
+%
+\begin{document}
+\title{Descriptive Modelling of System Dynamics}
+\author{	G.~Zholtkevych\and K.~Nosov\and Yu.~Bespalov}
+\address{%
+	School of Mathematics and Computer Science,
+	V.N.~Karazin Kharkiv National University,
+	4 Svobody Sqr., 61022, Kharkiv, Ukraine
+}
+\maketitle
+\begin{abstract}
+\lipsum[13]
+\end{abstract}
+\tableofcontents
+\section{General Deterministic Model}
+We assume that the static description of a system is determined by
+\begin{enumerate}
+\item
+the finite set $\A$ of system parameter (attributes) names and
+\item
+the set $\V{m}=\{0,1,\ldots,m-1\}$ of attribute values where $(m\geq 2)$\,.
+\end{enumerate}
+
+Elements of the set $\C{m}$ represent snapshots of the system.
+
+Thus the system dynamics is represented by a mapping $T\colon\C{m}\to\C{m}$\,.
+
+The suggested general model is based on the assumption that the mapping $\imp\colon\C{m}\to\D$ describing the character of the current impact is given and this mapping determines uniquely the operator $T$ in the following manner
+\begin{equation}\label{eq:dynamics}
+	(Ts)(a)=\left\lbrace\begin{array}{ll}
+		\max(s(a)-1,0) & \text{if }\imp(s)=-1\\
+		s(a) & \text{if }\imp(s)=0\\
+		\min(s(a)+1,m-1) & \text{if }\imp(s)=1
+	\end{array}
+	\right.
+\end{equation}
+where $s\in\C{m}$\,, $a\in\A$\,, $\D=\{-1,0,1\}$\,, and $-1$ means a negative impact, $1$ means a positive impact, and $0$ means a neutral impact or its absence.
+\begin{problem}
+Is it true that for every operator $T\colon\C{m}\to\C{m}$ there exists a mapping $\imp\colon\C{m}\to\D$ ensuring the representation \eqref{eq:dynamics} for $T$\,?
+\par\noindent
+If so then the study of interrelations of $T$ with the corresponding impact mappings is required.
+\end{problem}
+\end{document}
